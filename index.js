@@ -1,41 +1,77 @@
-function newImage(url, left, bottom){
+// create background
+// have to do this first to make sure it appears behind all the other sprites
+let backgroundImage = "assets/grass.png"
+
+for (let y = 0; y < window.innerHeight; y += 100)
+{
+	if (y > 600)
+	{
+		backgroundImage = "assets/sky.png"
+	}
+
+	for (let x = 0; x < window.innerWidth; x+= 100)
+	{
+		move(newImage(backgroundImage)).to(x, y)
+	}
+}
+
+// new image function
+function newImage(url){
     let image = document.createElement('img')
     image.src = url
-    image.style.position = 'fixed'
-    image.style.left = left + 'px'
-    image.style.bottom = bottom + 'px'
     document.body.append(image)
     return image
 }
 
-newImage('assets/green-character.gif', 100, 250)
-newImage('assets/tree.png', 200, 450)
-newImage('assets/pillar.png', 350, 250)
-newImage('assets/pine-tree.png', 450, 350)
-newImage('assets/crate.png', 150, 350)
-newImage('assets/well.png', 500, 575)
+// move function
+function move(element){
+    element.style.position = 'fixed'
 
+    // create function for positioning
+    function moveToCoordinates(left, bottom) {
+        element.style.left = left + 'px'
+        element.style.bottom = bottom + 'px'
+    }
 
-function newItem(url, left, bottom){
-    let item = newImage(url, left, bottom)
+    // return positioning function
+    return {
+        to: moveToCoordinates
+    }
+}
+
+// create images
+move(newImage('assets/green-character.gif')).to(100, 250)
+move(newImage('assets/tree.png')).to(200, 450)
+move(newImage('assets/pillar.png')).to(350, 250)
+move(newImage('assets/pine-tree.png')).to(450, 350)
+move(newImage('assets/crate.png')).to(150, 350)
+move(newImage('assets/well.png')).to(500, 575)
+
+// new item function
+function newItem(url){
+    let item = newImage(url)
+
+    // pickup item function
     item.addEventListener('click', () => {
         item.remove()
         let inventoryItem = document.createElement('img')
         inventoryItem.src = url;
-        inventory.append(inventoryItem)
+
+        inventory.add(inventoryItem)
     })
+
     return item
 }
 
-newItem('assets/sword.png', 500, 555)
-newItem('assets/shield.png', 165, 335)
-newItem('assets/staff.png', 600, 250)
+// create items
+move(newItem('assets/sword.png')).to(500, 555)
+move(newItem('assets/shield.png')).to(165, 335)
+move(newItem('assets/staff.png')).to(600, 250)
 
+// inventory function
 function newInventory(){
+    // create inventory
     let inventory = document.createElement('div')
-    inventory.style.position = 'fixed'
-    inventory.style.bottom = '0px';
-    inventory.style.left = '0px'
     inventory.style.width = '100%'
     inventory.style.height = '100px'
     inventory.style.display = 'flex'
@@ -45,7 +81,20 @@ function newInventory(){
     inventory.style.border = '2px solid black'
     inventory.style.backgroundColor = 'brown'
     document.body.append(inventory)
-    return inventory
+
+    // position inventory
+    move(inventory).to(0, 0)
+
+    // create add function
+    function addItem(item) {
+        inventory.append(item)
+    }
+
+    // return add function
+    return {
+        add: addItem
+    }
 }
 
+// assign inventory to a variable so we can reference it later
 const inventory = newInventory()
